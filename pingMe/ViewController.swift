@@ -34,15 +34,30 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
     }
     func colorForIndex(index: Int)->UIColor{
         let itemCount = ToDoItems.count - 1
-        let val = (CGFloat(index)/CGFloat(itemCount))*0.6
+        let val = (CGFloat(index) / CGFloat(itemCount))*0.6
         return UIColor(red: 1.0, green: val, blue: 0.0, alpha: 1.0)
     }
     func toDoItemDeleted(todoItem toDoItem: ToDoItem) {
-        let index = (ToDoItems as NSArray).index(of: toDoItem);
-        if index == NSNotFound{
-            return
+        var index = 0
+        for i in 0..<ToDoItems.count{
+            if ToDoItems[i] == toDoItem{
+                index = i
+                break
+            }
         }
         ToDoItems.remove(at: index)
+        let visibleCells = tableView.visibleCells as! [TableViewCell]
+        let lastView = visibleCells[visibleCells.count - 1]
+        var delay = 0.0
+        var startAnimating = false
+        let listCount = visibleCells.count
+        for i in 0..<listCount {
+                let cell = visibleCells[i]
+                    if startAnimating{
+                        UIView.animate(withDuration: 0.3, animations: {
+                            
+                        })
+                    }
         tableView.beginUpdates()
         let indexPathForRow = IndexPath(row: index, section: 0)
         tableView.deleteRows(at: [indexPathForRow], with: .fade)
@@ -63,13 +78,15 @@ class ViewController: UIViewController,UITableViewDataSource,UITableViewDelegate
         return ToDoItems.count;
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell")
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! TableViewCell
         let item = ToDoItems[indexPath.row]
-        cell.delegate = self         cell.toDoItem = item
-        cell?.selectionStyle = .none
-        cell?.textLabel?.text = item.text
-        cell?.textLabel?.backgroundColor = UIColor.clear
-        return cell!
+        cell.delegate = self;
+        cell.toDoItem = item;
+        cell.selectionStyle = .none
+        cell.textLabel?.text = item.text
+        cell.textLabel?.backgroundColor = UIColor.clear
+        cell.textLabel?.textColor = UIColor.white
+        return cell
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
